@@ -8,6 +8,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserController;
 
 
 Route::get('/', function () {
@@ -15,7 +16,10 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $user = auth()->user();
+    if ($user->isAdmin()) return redirect()->route('admin.dashboard');
+    if ($user->isPharmacist()) return redirect()->route('pharmacist.dashboard');
+    return redirect()->route('cashier.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -80,6 +84,10 @@ Route::middleware(['auth', 'role:pharmacist'])->group(function () {
 
 Route::middleware(['auth', 'role:cashier'])->group(function () {
     Route::get('/cashier/dashboard', [DashboardController::class, 'cashier'])->name('cashier.dashboard');
+});
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::resource('users', UserController::class)->except(['show']);
 });
 
 require __DIR__.'/auth.php';

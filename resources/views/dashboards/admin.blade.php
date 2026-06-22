@@ -1,111 +1,103 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Admin Dashboard
-        </h2>
-    </x-slot>
+    <x-slot name="header">Admin Dashboard</x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-
-            <!-- Stats Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-                <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
-                    <p class="text-sm text-gray-500">Total Medicines</p>
-                    <p class="text-3xl font-bold text-blue-600">{{ $total_medicines }}</p>
-                </div>
-                <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
-                    <p class="text-sm text-gray-500">Total Suppliers</p>
-                    <p class="text-3xl font-bold text-gray-800 dark:text-gray-200">{{ $total_suppliers }}</p>
-                </div>
-                <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
-                    <p class="text-sm text-gray-500">Today's Revenue</p>
-                    <p class="text-3xl font-bold text-green-600">KES {{ number_format($today_sales, 2) }}</p>
-                </div>
-                <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
-                    <p class="text-sm text-gray-500">Monthly Revenue</p>
-                    <p class="text-3xl font-bold text-green-600">KES {{ number_format($monthly_revenue, 2) }}</p>
-                </div>
-            </div>
-
-            <!-- Alert Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <div class="bg-orange-50 dark:bg-gray-800 border border-orange-200 shadow-sm sm:rounded-lg p-6">
-                    <p class="text-sm text-orange-600 font-medium">Low Stock Alerts</p>
-                    <p class="text-3xl font-bold text-orange-600">{{ $low_stock }}</p>
-                    <a href="{{ route('reports.inventory') }}" class="text-sm text-orange-500 hover:underline">View details →</a>
-                </div>
-                <div class="bg-yellow-50 dark:bg-gray-800 border border-yellow-200 shadow-sm sm:rounded-lg p-6">
-                    <p class="text-sm text-yellow-600 font-medium">Expiring Soon</p>
-                    <p class="text-3xl font-bold text-yellow-600">{{ $expiring_soon }}</p>
-                    <a href="{{ route('reports.expiry') }}" class="text-sm text-yellow-500 hover:underline">View details →</a>
-                </div>
-                <div class="bg-red-50 dark:bg-gray-800 border border-red-200 shadow-sm sm:rounded-lg p-6">
-                    <p class="text-sm text-red-600 font-medium">Expired Medicines</p>
-                    <p class="text-3xl font-bold text-red-600">{{ $expired }}</p>
-                    <a href="{{ route('reports.expiry') }}" class="text-sm text-red-500 hover:underline">View details →</a>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                <!-- Recent Sales -->
-                <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200">Recent Sales</h3>
-                        <a href="{{ route('sales.index') }}" class="text-blue-600 text-sm hover:underline">View all</a>
-                    </div>
-                    <table class="w-full text-sm text-gray-700 dark:text-gray-300">
-                        <thead class="text-xs uppercase bg-gray-50 dark:bg-gray-700">
-                            <tr>
-                                <th class="px-3 py-2 text-left">Receipt</th>
-                                <th class="px-3 py-2 text-left">Served By</th>
-                                <th class="px-3 py-2 text-right">Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($recent_sales as $sale)
-                                <tr class="border-b dark:border-gray-700">
-                                    <td class="px-3 py-2">{{ $sale->receipt_number }}</td>
-                                    <td class="px-3 py-2">{{ $sale->user->name }}</td>
-                                    <td class="px-3 py-2 text-right">KES {{ number_format($sale->total_amount, 2) }}</td>
-                                </tr>
-                            @empty
-                                <tr><td colspan="3" class="px-3 py-4 text-center text-gray-500">No sales yet today.</td></tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Low Stock Medicines -->
-                <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200">Low Stock Medicines</h3>
-                        <a href="{{ route('medicines.index') }}" class="text-blue-600 text-sm hover:underline">View all</a>
-                    </div>
-                    <table class="w-full text-sm text-gray-700 dark:text-gray-300">
-                        <thead class="text-xs uppercase bg-gray-50 dark:bg-gray-700">
-                            <tr>
-                                <th class="px-3 py-2 text-left">Medicine</th>
-                                <th class="px-3 py-2 text-center">Quantity</th>
-                                <th class="px-3 py-2 text-center">Reorder Level</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($low_stock_medicines as $medicine)
-                                <tr class="border-b dark:border-gray-700">
-                                    <td class="px-3 py-2">{{ $medicine->name }}</td>
-                                    <td class="px-3 py-2 text-center text-red-600 font-bold">{{ $medicine->quantity }}</td>
-                                    <td class="px-3 py-2 text-center">{{ $medicine->reorder_level }}</td>
-                                </tr>
-                            @empty
-                                <tr><td colspan="3" class="px-3 py-4 text-center text-gray-500">No low stock medicines.</td></tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-
-            </div>
+    <!-- Stats Cards -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px;">
+        <div style="background:#fff;border:1px solid #dde3ec;border-radius:10px;padding:16px;">
+            <p style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:#64748b;margin:0 0 10px;">Total Medicines</p>
+            <p style="font-size:28px;font-weight:700;color:#1d4ed8;margin:0;">{{ $total_medicines }}</p>
         </div>
+        <div style="background:#fff;border:1px solid #dde3ec;border-radius:10px;padding:16px;">
+            <p style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:#64748b;margin:0 0 10px;">Total Suppliers</p>
+            <p style="font-size:28px;font-weight:700;color:#1a2740;margin:0;">{{ $total_suppliers }}</p>
+        </div>
+        <div style="background:#fff;border:1px solid #dde3ec;border-radius:10px;padding:16px;">
+            <p style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:#64748b;margin:0 0 10px;">Today's Revenue</p>
+            <p style="font-size:24px;font-weight:700;color:#16a34a;margin:0;">KES {{ number_format($today_sales, 2) }}</p>
+        </div>
+        <div style="background:#fff;border:1px solid #dde3ec;border-radius:10px;padding:16px;">
+            <p style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:#64748b;margin:0 0 10px;">Monthly Revenue</p>
+            <p style="font-size:24px;font-weight:700;color:#16a34a;margin:0;">KES {{ number_format($monthly_revenue, 2) }}</p>
+        </div>
+    </div>
+
+    <!-- Alert Cards -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px;">
+        <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:16px;">
+            <p style="font-size:11px;font-weight:600;color:#c2410c;margin:0 0 8px;text-transform:uppercase;">Low Stock Alerts</p>
+            <p style="font-size:28px;font-weight:700;color:#c2410c;margin:0 0 8px;">{{ $low_stock }}</p>
+            <a href="{{ route('reports.inventory') }}" style="font-size:12px;color:#ea580c;text-decoration:none;">View details →</a>
+        </div>
+        <div style="background:#fefce8;border:1px solid #fde68a;border-radius:10px;padding:16px;">
+            <p style="font-size:11px;font-weight:600;color:#b45309;margin:0 0 8px;text-transform:uppercase;">Expiring Soon</p>
+            <p style="font-size:28px;font-weight:700;color:#d97706;margin:0 0 8px;">{{ $expiring_soon }}</p>
+            <a href="{{ route('reports.expiry') }}" style="font-size:12px;color:#d97706;text-decoration:none;">View details →</a>
+        </div>
+        <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:16px;">
+            <p style="font-size:11px;font-weight:600;color:#b91c1c;margin:0 0 8px;text-transform:uppercase;">Expired Medicines</p>
+            <p style="font-size:28px;font-weight:700;color:#dc2626;margin:0 0 8px;">{{ $expired }}</p>
+            <a href="{{ route('reports.expiry') }}" style="font-size:12px;color:#dc2626;text-decoration:none;">View details →</a>
+        </div>
+    </div>
+
+    <!-- Tables -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+
+        <!-- Recent Sales -->
+        <div style="background:#fff;border:1px solid #dde3ec;border-radius:10px;overflow:hidden;">
+            <div style="padding:14px 20px;border-bottom:1px solid #dde3ec;display:flex;justify-content:space-between;align-items:center;">
+                <h3 style="font-size:14px;font-weight:600;margin:0;color:#1a2740;">Recent Sales</h3>
+                <a href="{{ route('sales.index') }}" style="font-size:12px;color:#4a90d9;text-decoration:none;">View all →</a>
+            </div>
+            <table style="width:100%;border-collapse:collapse;">
+                <thead>
+                    <tr style="background:#f8fafc;">
+                        <th style="padding:9px 18px;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#64748b;text-align:left;">Receipt</th>
+                        <th style="padding:9px 18px;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#64748b;text-align:left;">Served By</th>
+                        <th style="padding:9px 18px;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#64748b;text-align:right;">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($recent_sales as $sale)
+                        <tr style="border-bottom:1px solid #f1f5f9;">
+                            <td style="padding:11px 18px;font-size:13px;color:#374151;">{{ $sale->receipt_number }}</td>
+                            <td style="padding:11px 18px;font-size:13px;color:#374151;">{{ $sale->user->name }}</td>
+                            <td style="padding:11px 18px;font-size:13px;color:#374151;text-align:right;">KES {{ number_format($sale->total_amount, 2) }}</td>
+                        </tr>
+                    @empty
+                        <tr><td colspan="3" style="padding:20px;text-align:center;color:#94a3b8;font-size:13px;">No sales yet.</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Low Stock Medicines -->
+        <div style="background:#fff;border:1px solid #dde3ec;border-radius:10px;overflow:hidden;">
+            <div style="padding:14px 20px;border-bottom:1px solid #dde3ec;display:flex;justify-content:space-between;align-items:center;">
+                <h3 style="font-size:14px;font-weight:600;margin:0;color:#1a2740;">Low Stock Medicines</h3>
+                <a href="{{ route('medicines.index') }}" style="font-size:12px;color:#4a90d9;text-decoration:none;">View all →</a>
+            </div>
+            <table style="width:100%;border-collapse:collapse;">
+                <thead>
+                    <tr style="background:#f8fafc;">
+                        <th style="padding:9px 18px;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#64748b;text-align:left;">Medicine</th>
+                        <th style="padding:9px 18px;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#64748b;text-align:center;">Quantity</th>
+                        <th style="padding:9px 18px;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#64748b;text-align:center;">Reorder Level</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($low_stock_medicines as $medicine)
+                        <tr style="border-bottom:1px solid #f1f5f9;">
+                            <td style="padding:11px 18px;font-size:13px;color:#374151;">{{ $medicine->name }}</td>
+                            <td style="padding:11px 18px;font-size:13px;color:#dc2626;font-weight:600;text-align:center;">{{ $medicine->quantity }}</td>
+                            <td style="padding:11px 18px;font-size:13px;color:#374151;text-align:center;">{{ $medicine->reorder_level }}</td>
+                        </tr>
+                    @empty
+                        <tr><td colspan="3" style="padding:20px;text-align:center;color:#94a3b8;font-size:13px;">No low stock medicines.</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
     </div>
 </x-app-layout>

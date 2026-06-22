@@ -20,6 +20,7 @@
                         <x-nav-link :href="route('suppliers.index')" :active="request()->routeIs('suppliers.*')">Suppliers</x-nav-link>
                         <x-nav-link :href="route('purchases.index')" :active="request()->routeIs('purchases.*')">Purchases</x-nav-link>
                         <x-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.*')">Reports</x-nav-link>
+                        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">Users</x-nav-link>
                     @endif
 
                     @if(auth()->user()->isPharmacist())
@@ -89,6 +90,7 @@
                 <x-responsive-nav-link :href="route('suppliers.index')" :active="request()->routeIs('suppliers.*')">Suppliers</x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('purchases.index')" :active="request()->routeIs('purchases.*')">Purchases</x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.*')">Reports</x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">Users</x-responsive-nav-link>
             @endif
 
             @if(auth()->user()->isPharmacist())
