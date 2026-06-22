@@ -1,113 +1,113 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            New Sale
-        </h2>
-    </x-slot>
+    <x-slot name="header">New Sale</x-slot>
 
-    <div class="py-12">
-        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6">
+    @if($errors->any())
+        <div style="background:#fee2e2;border:1px solid #fecaca;color:#b91c1c;padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:13px;">
+            <ul style="margin:0;padding-left:16px;">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-                    @if($errors->any())
-                        <div class="mb-4 p-4 bg-red-100 text-red-800 rounded">
-                            <ul class="list-disc pl-5">
-                                @foreach($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
+    <form action="{{ route('sales.store') }}" method="POST" id="saleForm">
+        @csrf
+        <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:20px;">
 
-                    <form action="{{ route('sales.store') }}" method="POST" id="saleForm">
-                        @csrf
-
-                        <!-- Customer Info -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <!-- Left: Sale Form -->
+            <div>
+                <div style="background:#fff;border:1px solid #dde3ec;border-radius:10px;overflow:hidden;margin-bottom:16px;">
+                    <div style="padding:14px 20px;border-bottom:1px solid #dde3ec;">
+                        <h3 style="font-size:14px;font-weight:600;margin:0;color:#1a2740;">Customer Info</h3>
+                    </div>
+                    <div style="padding:16px;">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Customer Name (Optional)</label>
-                                <input type="text" name="customer_name" value="{{ old('customer_name') }}"
-                                    placeholder="Walk-in customer"
-                                    class="mt-1 w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white shadow-sm">
+                                <label style="display:block;font-size:11.5px;font-weight:500;color:#64748b;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em;">Customer Name</label>
+                                <input type="text" name="customer_name" placeholder="Walk-in customer"
+                                    style="width:100%;padding:8px 12px;border:1px solid #dde3ec;border-radius:7px;font-size:13px;color:#1a2740;outline:none;font-family:inherit;">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Payment Method *</label>
+                                <label style="display:block;font-size:11.5px;font-weight:500;color:#64748b;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em;">Payment Method *</label>
                                 <select name="payment_method"
-                                    class="mt-1 w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white shadow-sm">
+                                    style="width:100%;padding:8px 12px;border:1px solid #dde3ec;border-radius:7px;font-size:13px;color:#1a2740;outline:none;font-family:inherit;">
                                     <option value="cash">Cash</option>
                                     <option value="mpesa">M-Pesa</option>
                                     <option value="insurance">Insurance</option>
                                 </select>
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        <!-- Medicines -->
-                        <div class="mb-4">
-                            <div class="flex justify-between items-center mb-2">
-                                <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200">Medicines</h3>
-                                <button type="button" onclick="addMedicineRow()"
-                                    class="bg-green-600 hover:bg-green-700 text-white text-sm py-1 px-3 rounded">
-                                    + Add Item
-                                </button>
-                            </div>
+                <div style="background:#fff;border:1px solid #dde3ec;border-radius:10px;overflow:hidden;">
+                    <div style="padding:14px 20px;border-bottom:1px solid #dde3ec;display:flex;justify-content:space-between;align-items:center;">
+                        <h3 style="font-size:14px;font-weight:600;margin:0;color:#1a2740;">Medicines</h3>
+                        <button type="button" onclick="addMedicineRow()"
+                            style="background:#1a3557;color:#fff;padding:5px 12px;border-radius:6px;border:none;font-size:12px;font-weight:500;cursor:pointer;">+ Add Item</button>
+                    </div>
+                    <div style="padding:16px;">
+                        <table style="width:100%;border-collapse:collapse;">
+                            <thead>
+                                <tr style="background:#f8fafc;">
+                                    <th style="padding:8px 12px;font-size:10.5px;font-weight:600;text-transform:uppercase;color:#64748b;text-align:left;">Medicine</th>
+                                    <th style="padding:8px 12px;font-size:10.5px;font-weight:600;text-transform:uppercase;color:#64748b;text-align:left;">Unit Price</th>
+                                    <th style="padding:8px 12px;font-size:10.5px;font-weight:600;text-transform:uppercase;color:#64748b;text-align:left;">Qty</th>
+                                    <th style="padding:8px 12px;font-size:10.5px;font-weight:600;text-transform:uppercase;color:#64748b;text-align:left;">Subtotal</th>
+                                    <th style="padding:8px 12px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="medicineRows"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
-                            <table class="w-full text-sm">
-                                <thead class="bg-gray-100 dark:bg-gray-700">
-                                    <tr>
-                                        <th class="px-3 py-2 text-left">Medicine</th>
-                                        <th class="px-3 py-2 text-left">Unit Price</th>
-                                        <th class="px-3 py-2 text-left">Quantity</th>
-                                        <th class="px-3 py-2 text-left">Subtotal</th>
-                                        <th class="px-3 py-2"></th>
-                                    </tr>
-                                </thead>
-                                <tbody id="medicineRows">
-                                    <!-- rows added dynamically -->
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <!-- Totals -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Notes</label>
-                                <textarea name="notes" rows="2"
-                                    class="mt-1 w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white shadow-sm"></textarea>
-                            </div>
-                            <div class="space-y-3">
-                                <div class="flex justify-between text-lg font-bold text-gray-800 dark:text-gray-200">
-                                    <span>Total:</span>
-                                    <span>KES <span id="totalDisplay">0.00</span></span>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Amount Paid (KES) *</label>
-                                    <input type="number" step="0.01" name="amount_paid" id="amountPaid"
-                                        oninput="calculateChange()"
-                                        class="mt-1 w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white shadow-sm">
-                                </div>
-                                <div class="flex justify-between text-md text-gray-700 dark:text-gray-300">
-                                    <span>Change:</span>
-                                    <span>KES <span id="changeDisplay">0.00</span></span>
-                                </div>
+            <!-- Right: Summary -->
+            <div>
+                <div style="background:#fff;border:1px solid #dde3ec;border-radius:10px;overflow:hidden;">
+                    <div style="padding:14px 20px;border-bottom:1px solid #dde3ec;">
+                        <h3 style="font-size:14px;font-weight:600;margin:0;color:#1a2740;">Sale Summary</h3>
+                    </div>
+                    <div style="padding:16px;">
+                        <div style="background:#f8fafc;border:1px solid #dde3ec;border-radius:8px;padding:14px;margin-bottom:16px;">
+                            <div style="display:flex;justify-content:space-between;font-size:13px;color:#64748b;padding:4px 0;">
+                                <span>Total</span>
+                                <span style="font-size:18px;font-weight:700;color:#1a2740;">KES <span id="totalDisplay">0.00</span></span>
                             </div>
                         </div>
-
-                        <div class="mt-6 flex gap-4">
+                        <div style="margin-bottom:14px;">
+                            <label style="display:block;font-size:11.5px;font-weight:500;color:#64748b;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em;">Amount Paid (KES) *</label>
+                            <input type="number" step="0.01" name="amount_paid" id="amountPaid" oninput="calculateChange()"
+                                style="width:100%;padding:8px 12px;border:1px solid #dde3ec;border-radius:7px;font-size:13px;color:#1a2740;outline:none;font-family:inherit;">
+                        </div>
+                        <div style="background:#f8fafc;border:1px solid #dde3ec;border-radius:8px;padding:14px;margin-bottom:16px;">
+                            <div style="display:flex;justify-content:space-between;font-size:13px;color:#64748b;">
+                                <span>Change</span>
+                                <span style="font-weight:700;color:#16a34a;">KES <span id="changeDisplay">0.00</span></span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom:14px;">
+                            <label style="display:block;font-size:11.5px;font-weight:500;color:#64748b;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em;">Notes</label>
+                            <textarea name="notes" rows="2"
+                                style="width:100%;padding:8px 12px;border:1px solid #dde3ec;border-radius:7px;font-size:13px;color:#1a2740;outline:none;font-family:inherit;resize:vertical;"></textarea>
+                        </div>
+                        <div style="display:flex;gap:10px;">
                             <button type="submit"
-                                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded">
-                                Complete Sale
+                                style="flex:1;background:#1a3557;color:#fff;padding:10px;border-radius:7px;border:none;font-size:13px;font-weight:600;cursor:pointer;">
+                                ✔ Complete Sale
                             </button>
                             <a href="{{ route('sales.index') }}"
-                                class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded">
+                                style="background:#f1f5f9;color:#64748b;padding:10px 16px;border-radius:7px;text-decoration:none;font-size:13px;font-weight:500;">
                                 Cancel
                             </a>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </form>
 
     <script>
         const medicines = @json($medicines);
@@ -118,31 +118,31 @@
             const tbody = document.getElementById('medicineRows');
             const row = document.createElement('tr');
             row.id = `row_${rowIndex}`;
-            row.className = 'border-b dark:border-gray-700';
+            row.style.borderBottom = '1px solid #f1f5f9';
             row.innerHTML = `
-                <td class="px-3 py-2">
+                <td style="padding:8px 12px;">
                     <select name="medicines[${rowIndex}][id]" onchange="updatePrice(${rowIndex})"
-                        class="w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white shadow-sm text-sm">
-                        <option value="">-- Select Medicine --</option>
-                        ${medicines.map(m => `<option value="${m.id}" data-price="${m.selling_price}">${m.name} (${m.quantity} left)</option>`).join('')}
+                        style="width:100%;padding:6px 10px;border:1px solid #dde3ec;border-radius:6px;font-size:12px;color:#1a2740;outline:none;font-family:inherit;">
+                        <option value="">-- Select --</option>
+                        ${medicines.map(m => `<option value="${m.id}" data-price="${m.selling_price}">${m.name} (${m.quantity})</option>`).join('')}
                     </select>
                 </td>
-                <td class="px-3 py-2">
+                <td style="padding:8px 12px;">
                     <input type="text" id="price_${rowIndex}" readonly value="0.00"
-                        class="w-24 rounded border-gray-300 dark:bg-gray-700 dark:text-white shadow-sm text-sm bg-gray-50">
+                        style="width:80px;padding:6px 10px;border:1px solid #dde3ec;border-radius:6px;font-size:12px;background:#f8fafc;">
                 </td>
-                <td class="px-3 py-2">
+                <td style="padding:8px 12px;">
                     <input type="number" name="medicines[${rowIndex}][quantity]" min="1" value="1"
                         oninput="updateSubtotal(${rowIndex})"
-                        class="w-20 rounded border-gray-300 dark:bg-gray-700 dark:text-white shadow-sm text-sm">
+                        style="width:60px;padding:6px 10px;border:1px solid #dde3ec;border-radius:6px;font-size:12px;outline:none;font-family:inherit;">
                 </td>
-                <td class="px-3 py-2">
+                <td style="padding:8px 12px;">
                     <input type="text" id="subtotal_${rowIndex}" readonly value="0.00"
-                        class="w-24 rounded border-gray-300 dark:bg-gray-700 dark:text-white shadow-sm text-sm bg-gray-50">
+                        style="width:80px;padding:6px 10px;border:1px solid #dde3ec;border-radius:6px;font-size:12px;background:#f8fafc;">
                 </td>
-                <td class="px-3 py-2">
+                <td style="padding:8px 12px;">
                     <button type="button" onclick="removeRow(${rowIndex})"
-                        class="text-red-600 hover:text-red-800 text-sm">Remove</button>
+                        style="background:#fee2e2;color:#b91c1c;padding:4px 8px;border-radius:5px;border:none;font-size:11px;cursor:pointer;">✕</button>
                 </td>
             `;
             tbody.appendChild(row);
@@ -177,8 +177,7 @@
 
         function calculateChange() {
             const paid = parseFloat(document.getElementById('amountPaid').value) || 0;
-            const change = paid - total;
-            document.getElementById('changeDisplay').textContent = change.toFixed(2);
+            document.getElementById('changeDisplay').textContent = (paid - total).toFixed(2);
         }
 
         function removeRow(index) {
@@ -186,7 +185,6 @@
             updateTotal();
         }
 
-        // Add first row automatically
         addMedicineRow();
     </script>
 </x-app-layout>

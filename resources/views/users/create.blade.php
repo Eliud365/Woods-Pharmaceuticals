@@ -1,78 +1,60 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Add New User
-        </h2>
-    </x-slot>
+    <x-slot name="header">Add New User</x-slot>
 
-    <div class="py-12">
-        <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6">
-
-                    @if($errors->any())
-                        <div class="mb-4 p-4 bg-red-100 text-red-800 rounded">
-                            <ul class="list-disc pl-5">
-                                @foreach($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
+    <div style="max-width:600px;">
+        @if($errors->any())
+            <div style="background:#fee2e2;border:1px solid #fecaca;color:#b91c1c;padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:13px;">
+                <ul style="margin:0;padding-left:16px;">
+                    @foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach
+                </ul>
+            </div>
+        @endif
+        <div style="background:#fff;border:1px solid #dde3ec;border-radius:10px;overflow:hidden;">
+            <div style="padding:14px 20px;border-bottom:1px solid #dde3ec;">
+                <h3 style="font-size:14px;font-weight:600;margin:0;color:#1a2740;">User Details</h3>
+            </div>
+            <div style="padding:20px;">
+                <form action="{{ route('users.store') }}" method="POST">
+                    @csrf
+                    <div style="display:flex;flex-direction:column;gap:16px;">
+                        <div>
+                            <label style="display:block;font-size:11.5px;font-weight:500;color:#64748b;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em;">Full Name *</label>
+                            <input type="text" name="name" value="{{ old('name') }}"
+                                style="width:100%;padding:8px 12px;border:1px solid #dde3ec;border-radius:7px;font-size:13px;color:#1a2740;outline:none;font-family:inherit;">
                         </div>
-                    @endif
-
-                    <form action="{{ route('users.store') }}" method="POST">
-                        @csrf
-                        <div class="space-y-4">
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Full Name *</label>
-                                <input type="text" name="name" value="{{ old('name') }}"
-                                    class="mt-1 w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white shadow-sm">
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email Address *</label>
-                                <input type="email" name="email" value="{{ old('email') }}"
-                                    class="mt-1 w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white shadow-sm">
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Role *</label>
-                                <select name="role"
-                                    class="mt-1 w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white shadow-sm">
-                                    <option value="">-- Select Role --</option>
-                                    <option value="admin" {{ old('role') === 'admin' ? 'selected' : '' }}>Admin</option>
-                                    <option value="pharmacist" {{ old('role') === 'pharmacist' ? 'selected' : '' }}>Pharmacist</option>
-                                    <option value="cashier" {{ old('role') === 'cashier' ? 'selected' : '' }}>Cashier</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Password *</label>
-                                <input type="password" name="password"
-                                    class="mt-1 w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white shadow-sm">
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Confirm Password *</label>
-                                <input type="password" name="password_confirmation"
-                                    class="mt-1 w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white shadow-sm">
-                            </div>
-
+                        <div>
+                            <label style="display:block;font-size:11.5px;font-weight:500;color:#64748b;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em;">Email Address *</label>
+                            <input type="email" name="email" value="{{ old('email') }}"
+                                style="width:100%;padding:8px 12px;border:1px solid #dde3ec;border-radius:7px;font-size:13px;color:#1a2740;outline:none;font-family:inherit;">
                         </div>
-
-                        <div class="mt-6 flex gap-4">
-                            <button type="submit"
-                                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded">
-                                Create User
-                            </button>
-                            <a href="{{ route('users.index') }}"
-                                class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded">
-                                Cancel
-                            </a>
+                        <div>
+                            <label style="display:block;font-size:11.5px;font-weight:500;color:#64748b;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em;">Role *</label>
+                            <select name="role"
+                                style="width:100%;padding:8px 12px;border:1px solid #dde3ec;border-radius:7px;font-size:13px;color:#1a2740;outline:none;font-family:inherit;">
+                                <option value="">-- Select Role --</option>
+                                <option value="admin" {{ old('role') === 'admin' ? 'selected' : '' }}>Admin</option>
+                                <option value="pharmacist" {{ old('role') === 'pharmacist' ? 'selected' : '' }}>Pharmacist</option>
+                                <option value="cashier" {{ old('role') === 'cashier' ? 'selected' : '' }}>Cashier</option>
+                            </select>
                         </div>
-                    </form>
-                </div>
+                        <div>
+                            <label style="display:block;font-size:11.5px;font-weight:500;color:#64748b;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em;">Password *</label>
+                            <input type="password" name="password"
+                                style="width:100%;padding:8px 12px;border:1px solid #dde3ec;border-radius:7px;font-size:13px;color:#1a2740;outline:none;font-family:inherit;">
+                        </div>
+                        <div>
+                            <label style="display:block;font-size:11.5px;font-weight:500;color:#64748b;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em;">Confirm Password *</label>
+                            <input type="password" name="password_confirmation"
+                                style="width:100%;padding:8px 12px;border:1px solid #dde3ec;border-radius:7px;font-size:13px;color:#1a2740;outline:none;font-family:inherit;">
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:10px;margin-top:20px;">
+                        <button type="submit"
+                            style="background:#1a3557;color:#fff;padding:8px 20px;border-radius:7px;border:none;font-size:13px;font-weight:500;cursor:pointer;">Create User</button>
+                        <a href="{{ route('users.index') }}"
+                            style="background:#f1f5f9;color:#64748b;padding:8px 20px;border-radius:7px;text-decoration:none;font-size:13px;font-weight:500;">Cancel</a>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

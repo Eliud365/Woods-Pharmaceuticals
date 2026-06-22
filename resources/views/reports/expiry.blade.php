@@ -1,111 +1,91 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Expiry Report
-        </h2>
-    </x-slot>
+    <x-slot name="header">Expiry Report</x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-
-            <!-- Summary Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
-                    <p class="text-sm text-gray-500">Expiring Within 30 Days</p>
-                    <p class="text-3xl font-bold text-yellow-600">{{ $expiring_soon->count() }}</p>
-                </div>
-                <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
-                    <p class="text-sm text-gray-500">Already Expired</p>
-                    <p class="text-3xl font-bold text-red-600">{{ $expired->count() }}</p>
-                </div>
-            </div>
-
-            <!-- Expiring Soon -->
-            @if($expiring_soon->count() > 0)
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-6">
-                <div class="p-6">
-                    <h3 class="text-lg font-bold text-yellow-600 mb-4">⚠️ Expiring Within 30 Days</h3>
-                    <table class="w-full text-sm text-left text-gray-700 dark:text-gray-300">
-                        <thead class="bg-yellow-50 dark:bg-gray-700 text-xs uppercase">
-                            <tr>
-                                <th class="px-4 py-3">#</th>
-                                <th class="px-4 py-3">Medicine</th>
-                                <th class="px-4 py-3">Category</th>
-                                <th class="px-4 py-3">Quantity</th>
-                                <th class="px-4 py-3">Batch No.</th>
-                                <th class="px-4 py-3">Expiry Date</th>
-                                <th class="px-4 py-3">Days Left</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($expiring_soon as $index => $medicine)
-                                <tr class="border-b dark:border-gray-700">
-                                    <td class="px-4 py-3">{{ $index + 1 }}</td>
-                                    <td class="px-4 py-3 font-medium">{{ $medicine->name }}</td>
-                                    <td class="px-4 py-3">{{ $medicine->category }}</td>
-                                    <td class="px-4 py-3">{{ $medicine->quantity }}</td>
-                                    <td class="px-4 py-3">{{ $medicine->batch_number ?? '-' }}</td>
-                                    <td class="px-4 py-3">{{ $medicine->expiry_date->format('d M Y') }}</td>
-                                    <td class="px-4 py-3 text-yellow-600 font-bold">
-                                        {{ now()->diffInDays($medicine->expiry_date) }} days
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            @endif
-
-            <!-- Expired -->
-            @if($expired->count() > 0)
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-6">
-                <div class="p-6">
-                    <h3 class="text-lg font-bold text-red-600 mb-4">❌ Expired Medicines</h3>
-                    <table class="w-full text-sm text-left text-gray-700 dark:text-gray-300">
-                        <thead class="bg-red-50 dark:bg-gray-700 text-xs uppercase">
-                            <tr>
-                                <th class="px-4 py-3">#</th>
-                                <th class="px-4 py-3">Medicine</th>
-                                <th class="px-4 py-3">Category</th>
-                                <th class="px-4 py-3">Quantity</th>
-                                <th class="px-4 py-3">Batch No.</th>
-                                <th class="px-4 py-3">Expiry Date</th>
-                                <th class="px-4 py-3">Expired</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($expired as $index => $medicine)
-                                <tr class="border-b dark:border-gray-700">
-                                    <td class="px-4 py-3">{{ $index + 1 }}</td>
-                                    <td class="px-4 py-3 font-medium">{{ $medicine->name }}</td>
-                                    <td class="px-4 py-3">{{ $medicine->category }}</td>
-                                    <td class="px-4 py-3">{{ $medicine->quantity }}</td>
-                                    <td class="px-4 py-3">{{ $medicine->batch_number ?? '-' }}</td>
-                                    <td class="px-4 py-3">{{ $medicine->expiry_date->format('d M Y') }}</td>
-                                    <td class="px-4 py-3 text-red-600 font-bold">
-                                        {{ $medicine->expiry_date->diffInDays(now()) }} days ago
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            @endif
-
-            @if($expiring_soon->count() === 0 && $expired->count() === 0)
-                <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6 text-center text-gray-500">
-                    ✅ No expiry issues found. All medicines are within their expiry dates.
-                </div>
-            @endif
-
-            <div class="mt-4">
-                <a href="{{ route('reports.index') }}"
-                    class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded">
-                    Back to Reports
-                </a>
-            </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+        <div style="background:#fefce8;border:1px solid #fde68a;border-radius:10px;padding:16px;">
+            <p style="font-size:11px;font-weight:500;text-transform:uppercase;color:#b45309;margin:0 0 8px;">Expiring Within 30 Days</p>
+            <p style="font-size:28px;font-weight:700;color:#d97706;margin:0;">{{ $expiring_soon->count() }}</p>
         </div>
+        <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:16px;">
+            <p style="font-size:11px;font-weight:500;text-transform:uppercase;color:#b91c1c;margin:0 0 8px;">Already Expired</p>
+            <p style="font-size:28px;font-weight:700;color:#dc2626;margin:0;">{{ $expired->count() }}</p>
+        </div>
+    </div>
+
+    @if($expiring_soon->count() > 0)
+    <div style="background:#fff;border:1px solid #dde3ec;border-radius:10px;overflow:hidden;margin-bottom:16px;">
+        <div style="padding:14px 20px;border-bottom:1px solid #dde3ec;">
+            <h3 style="font-size:14px;font-weight:600;margin:0;color:#d97706;">⚠️ Expiring Within 30 Days</h3>
+        </div>
+        <table style="width:100%;border-collapse:collapse;">
+            <thead>
+                <tr style="background:#fefce8;">
+                    <th style="padding:9px 18px;font-size:10.5px;font-weight:600;text-transform:uppercase;color:#64748b;text-align:left;">#</th>
+                    <th style="padding:9px 18px;font-size:10.5px;font-weight:600;text-transform:uppercase;color:#64748b;text-align:left;">Medicine</th>
+                    <th style="padding:9px 18px;font-size:10.5px;font-weight:600;text-transform:uppercase;color:#64748b;text-align:left;">Category</th>
+                    <th style="padding:9px 18px;font-size:10.5px;font-weight:600;text-transform:uppercase;color:#64748b;text-align:center;">Quantity</th>
+                    <th style="padding:9px 18px;font-size:10.5px;font-weight:600;text-transform:uppercase;color:#64748b;text-align:left;">Batch No.</th>
+                    <th style="padding:9px 18px;font-size:10.5px;font-weight:600;text-transform:uppercase;color:#64748b;text-align:left;">Expiry Date</th>
+                    <th style="padding:9px 18px;font-size:10.5px;font-weight:600;text-transform:uppercase;color:#64748b;text-align:left;">Days Left</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($expiring_soon as $index => $medicine)
+                    <tr style="border-bottom:1px solid #f1f5f9;">
+                        <td style="padding:11px 18px;font-size:13px;color:#374151;">{{ $index + 1 }}</td>
+                        <td style="padding:11px 18px;font-size:13px;color:#1a2740;font-weight:500;">{{ $medicine->name }}</td>
+                        <td style="padding:11px 18px;font-size:13px;color:#374151;">{{ $medicine->category }}</td>
+                        <td style="padding:11px 18px;font-size:13px;color:#374151;text-align:center;">{{ $medicine->quantity }}</td>
+                        <td style="padding:11px 18px;font-size:13px;color:#374151;">{{ $medicine->batch_number ?? '-' }}</td>
+                        <td style="padding:11px 18px;font-size:13px;color:#374151;">{{ $medicine->expiry_date->format('d M Y') }}</td>
+                        <td style="padding:11px 18px;font-size:13px;color:#d97706;font-weight:600;">{{ now()->diffInDays($medicine->expiry_date) }} days</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+    @endif
+
+    @if($expired->count() > 0)
+    <div style="background:#fff;border:1px solid #dde3ec;border-radius:10px;overflow:hidden;margin-bottom:16px;">
+        <div style="padding:14px 20px;border-bottom:1px solid #dde3ec;">
+            <h3 style="font-size:14px;font-weight:600;margin:0;color:#dc2626;">❌ Expired Medicines</h3>
+        </div>
+        <table style="width:100%;border-collapse:collapse;">
+            <thead>
+                <tr style="background:#fef2f2;">
+                    <th style="padding:9px 18px;font-size:10.5px;font-weight:600;text-transform:uppercase;color:#64748b;text-align:left;">#</th>
+                    <th style="padding:9px 18px;font-size:10.5px;font-weight:600;text-transform:uppercase;color:#64748b;text-align:left;">Medicine</th>
+                    <th style="padding:9px 18px;font-size:10.5px;font-weight:600;text-transform:uppercase;color:#64748b;text-align:left;">Category</th>
+                    <th style="padding:9px 18px;font-size:10.5px;font-weight:600;text-transform:uppercase;color:#64748b;text-align:center;">Quantity</th>
+                    <th style="padding:9px 18px;font-size:10.5px;font-weight:600;text-transform:uppercase;color:#64748b;text-align:left;">Expiry Date</th>
+                    <th style="padding:9px 18px;font-size:10.5px;font-weight:600;text-transform:uppercase;color:#64748b;text-align:left;">Expired</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($expired as $index => $medicine)
+                    <tr style="border-bottom:1px solid #f1f5f9;">
+                        <td style="padding:11px 18px;font-size:13px;color:#374151;">{{ $index + 1 }}</td>
+                        <td style="padding:11px 18px;font-size:13px;color:#1a2740;font-weight:500;">{{ $medicine->name }}</td>
+                        <td style="padding:11px 18px;font-size:13px;color:#374151;">{{ $medicine->category }}</td>
+                        <td style="padding:11px 18px;font-size:13px;color:#374151;text-align:center;">{{ $medicine->quantity }}</td>
+                        <td style="padding:11px 18px;font-size:13px;color:#374151;">{{ $medicine->expiry_date->format('d M Y') }}</td>
+                        <td style="padding:11px 18px;font-size:13px;color:#dc2626;font-weight:600;">{{ $medicine->expiry_date->diffInDays(now()) }} days ago</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+    @endif
+
+    @if($expiring_soon->count() === 0 && $expired->count() === 0)
+        <div style="background:#fff;border:1px solid #dde3ec;border-radius:10px;padding:30px;text-align:center;color:#64748b;font-size:13px;">
+            ✅ No expiry issues found. All medicines are within their expiry dates.
+        </div>
+    @endif
+
+    <div style="margin-top:16px;">
+        <a href="{{ route('reports.index') }}"
+            style="background:#f1f5f9;color:#64748b;padding:8px 16px;border-radius:7px;text-decoration:none;font-size:13px;font-weight:500;">← Back to Reports</a>
     </div>
 </x-app-layout>

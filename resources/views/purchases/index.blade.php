@@ -1,94 +1,82 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                Purchase Orders
-            </h2>
-            <a href="{{ route('purchases.create') }}"
-               class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                + New Purchase Order
-            </a>
-        </div>
-    </x-slot>
+    <x-slot name="header">Purchase Orders</x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <p style="color:#64748b;font-size:13px;margin:0;">Manage stock purchase orders</p>
+        <a href="{{ route('purchases.create') }}"
+           style="background:#1a3557;color:#fff;padding:8px 16px;border-radius:7px;text-decoration:none;font-size:13px;font-weight:500;">
+            + New Purchase Order
+        </a>
+    </div>
 
-            @if(session('success'))
-                <div class="mb-4 p-4 bg-green-100 text-green-800 rounded">
-                    {{ session('success') }}
-                </div>
-            @endif
+    @if(session('success'))
+        <div style="background:#dcfce7;border:1px solid #86efac;color:#15803d;padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:13px;">{{ session('success') }}</div>
+    @endif
+    @if(session('error'))
+        <div style="background:#fee2e2;border:1px solid #fecaca;color:#b91c1c;padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:13px;">{{ session('error') }}</div>
+    @endif
 
-            @if(session('error'))
-                <div class="mb-4 p-4 bg-red-100 text-red-800 rounded">
-                    {{ session('error') }}
-                </div>
-            @endif
-
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6">
-                    <table class="w-full text-sm text-left text-gray-700 dark:text-gray-300">
-                        <thead class="bg-gray-100 dark:bg-gray-700 text-xs uppercase">
-                            <tr>
-                                <th class="px-4 py-3">Ref No.</th>
-                                <th class="px-4 py-3">Supplier</th>
-                                <th class="px-4 py-3">Order Date</th>
-                                <th class="px-4 py-3">Expected Date</th>
-                                <th class="px-4 py-3">Total (KES)</th>
-                                <th class="px-4 py-3">Status</th>
-                                <th class="px-4 py-3">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($purchases as $purchase)
-                                <tr class="border-b dark:border-gray-700">
-                                    <td class="px-4 py-3 font-medium">{{ $purchase->reference_number }}</td>
-                                    <td class="px-4 py-3">{{ $purchase->supplier->name }}</td>
-                                    <td class="px-4 py-3">{{ $purchase->order_date->format('d M Y') }}</td>
-                                    <td class="px-4 py-3">{{ $purchase->expected_date ? $purchase->expected_date->format('d M Y') : '-' }}</td>
-                                    <td class="px-4 py-3">{{ number_format($purchase->total_amount, 2) }}</td>
-                                    <td class="px-4 py-3">
-                                        @if($purchase->status === 'received')
-                                            <span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">Received</span>
-                                        @elseif($purchase->status === 'pending')
-                                            <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs">Pending</span>
-                                        @else
-                                            <span class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs">Cancelled</span>
-                                        @endif
-                                    </td>
-                                    <td class="px-4 py-3 flex gap-2">
-                                        <a href="{{ route('purchases.show', $purchase) }}"
-                                           class="text-blue-600 hover:underline">View</a>
-                                        @if($purchase->status === 'pending')
-                                            <form action="{{ route('purchases.receive', $purchase) }}" method="POST"
-                                                  onsubmit="return confirm('Mark as received and update stock?')">
-                                                @csrf
-                                                <button type="submit" class="text-green-600 hover:underline">Receive</button>
-                                            </form>
-                                        @endif
-                                        <form action="{{ route('purchases.destroy', $purchase) }}" method="POST"
-                                              onsubmit="return confirm('Delete this purchase order?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:underline">Delete</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="7" class="px-4 py-6 text-center text-gray-500">
-                                        No purchase orders found.
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                    <div class="mt-4">
-                        {{ $purchases->links() }}
-                    </div>
-                </div>
-            </div>
+    <div style="background:#fff;border:1px solid #dde3ec;border-radius:10px;overflow:hidden;">
+        <table style="width:100%;border-collapse:collapse;">
+            <thead>
+                <tr style="background:#f8fafc;">
+                    <th style="padding:9px 18px;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#64748b;text-align:left;">Ref No.</th>
+                    <th style="padding:9px 18px;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#64748b;text-align:left;">Supplier</th>
+                    <th style="padding:9px 18px;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#64748b;text-align:left;">Order Date</th>
+                    <th style="padding:9px 18px;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#64748b;text-align:left;">Expected Date</th>
+                    <th style="padding:9px 18px;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#64748b;text-align:right;">Total (KES)</th>
+                    <th style="padding:9px 18px;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#64748b;text-align:center;">Status</th>
+                    <th style="padding:9px 18px;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#64748b;text-align:left;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($purchases as $purchase)
+                    <tr style="border-bottom:1px solid #f1f5f9;">
+                        <td style="padding:11px 18px;font-size:13px;color:#1a2740;font-weight:500;">{{ $purchase->reference_number }}</td>
+                        <td style="padding:11px 18px;font-size:13px;color:#374151;">{{ $purchase->supplier->name }}</td>
+                        <td style="padding:11px 18px;font-size:13px;color:#374151;">{{ $purchase->order_date->format('d M Y') }}</td>
+                        <td style="padding:11px 18px;font-size:13px;color:#374151;">{{ $purchase->expected_date ? $purchase->expected_date->format('d M Y') : '-' }}</td>
+                        <td style="padding:11px 18px;font-size:13px;color:#374151;text-align:right;">{{ number_format($purchase->total_amount, 2) }}</td>
+                        <td style="padding:11px 18px;text-align:center;">
+                            @if($purchase->status === 'received')
+                                <span style="background:#dcfce7;color:#15803d;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500;">Received</span>
+                            @elseif($purchase->status === 'pending')
+                                <span style="background:#fef3c7;color:#d97706;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500;">Pending</span>
+                            @else
+                                <span style="background:#fee2e2;color:#b91c1c;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500;">Cancelled</span>
+                            @endif
+                        </td>
+                        <td style="padding:11px 18px;font-size:13px;">
+                            <div style="display:flex;gap:8px;">
+                                <a href="{{ route('purchases.show', $purchase) }}"
+                                   style="background:#dbeafe;color:#1d4ed8;padding:4px 12px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:500;">View</a>
+                                @if($purchase->status === 'pending')
+                                    <form action="{{ route('purchases.receive', $purchase) }}" method="POST"
+                                          onsubmit="return confirm('Mark as received and update stock?')">
+                                        @csrf
+                                        <button type="submit"
+                                            style="background:#dcfce7;color:#15803d;padding:4px 12px;border-radius:6px;border:none;font-size:12px;font-weight:500;cursor:pointer;">Receive</button>
+                                    </form>
+                                @endif
+                                <form action="{{ route('purchases.destroy', $purchase) }}" method="POST"
+                                      onsubmit="return confirm('Delete this purchase order?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        style="background:#fee2e2;color:#b91c1c;padding:4px 12px;border-radius:6px;border:none;font-size:12px;font-weight:500;cursor:pointer;">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="7" style="padding:30px;text-align:center;color:#94a3b8;font-size:13px;">No purchase orders found.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+        <div style="padding:12px 18px;border-top:1px solid #f1f5f9;">
+            {{ $purchases->links() }}
         </div>
     </div>
 </x-app-layout>
