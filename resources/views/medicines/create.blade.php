@@ -81,3 +81,14 @@
                         <button type="submit"
                             style="background:#1a3557;color:#fff;padding:8px 20px;border-radius:7px;border:none;font-size:13px;font-weight:500;cursor:pointer;">
                             Save Medicine
+                        </button>
+                        <a href="{{ route('medicines.index') }}"
+                            style="background:#f1f5f9;color:#64748b;padding:8px 20px;border-radius:7px;text-decoration:none;font-size:13px;font-weight:500;">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</x-app-layout>

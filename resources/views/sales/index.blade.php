@@ -41,13 +41,15 @@
                             <div style="display:flex;gap:8px;">
                                 <a href="{{ route('sales.receipt', $sale->id) }}"
                                    style="background:#dbeafe;color:#1d4ed8;padding:4px 12px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:500;">Receipt</a>
-                                <form action="{{ route('sales.destroy', $sale) }}" method="POST"
-                                      onsubmit="return confirm('Delete this sale?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                        style="background:#fee2e2;color:#b91c1c;padding:4px 12px;border-radius:6px;border:none;font-size:12px;font-weight:500;cursor:pointer;">Delete</button>
-                                </form>
+                                @if(auth()->user()->isAdmin())
+                                    <form action="{{ route('sales.destroy', $sale) }}" method="POST"
+                                          onsubmit="return confirm('Delete this sale?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                            style="background:#fee2e2;color:#b91c1c;padding:4px 12px;border-radius:6px;border:none;font-size:12px;font-weight:500;cursor:pointer;">Delete</button>
+                                    </form>
+                                @endif
                             </div>
                         </td>
                     </tr>

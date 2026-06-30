@@ -33,17 +33,22 @@ class SaleController extends Controller
             'customer_name'         => 'nullable|string|max:255',
         ]);
 
+        // Check stock before processing
+        foreach ($request->medicines as $item) {
+            $medicine = Medicine::findOrFail($item['id']);
+            if ($medicine->quantity < $item['quantity']) {
+                return back()
+                    ->withInput()
+                    ->withErrors(['medicines' => "Insufficient stock for {$medicine->name}. Available: {$medicine->quantity}, Requested: {$item['quantity']}"]);
+            }
+        }
+
         DB::transaction(function () use ($request) {
             $total = 0;
             $items = [];
 
             foreach ($request->medicines as $item) {
                 $medicine = Medicine::findOrFail($item['id']);
-
-                if ($medicine->quantity < $item['quantity']) {
-                    throw new \Exception("Insufficient stock for {$medicine->name}");
-                }
-
                 $subtotal = $medicine->selling_price * $item['quantity'];
                 $total += $subtotal;
 
