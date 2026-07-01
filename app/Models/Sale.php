@@ -31,9 +31,13 @@ class Sale extends Model
     }
 
     public static function generateReceiptNumber(): string
-    {
-        $last = self::latest()->first();
+{
+    do {
+        $last = self::orderByRaw('CAST(SUBSTRING(receipt_number, 5) AS UNSIGNED) DESC')->first();
         $number = $last ? intval(substr($last->receipt_number, 4)) + 1 : 1;
-        return 'RCP-' . str_pad($number, 5, '0', STR_PAD_LEFT);
-    }
+        $receiptNumber = 'RCP-' . str_pad($number, 5, '0', STR_PAD_LEFT);
+    } while (self::where('receipt_number', $receiptNumber)->exists());
+
+    return $receiptNumber;
+}
 }
